@@ -9,9 +9,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.*;
 
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.*;
 
 class Test_my_Calculator {
     public my_Calculator calc;
@@ -77,20 +75,20 @@ class Test_my_Calculator {
         return expectedResult;
     }
 
-//    @ParameterizedTest
-//    @Disabled
-//    //@CsvSource(value = {"+:12.00", "/:1.00"}, delimiter = ':')
-//    @CsvFileSource(resources = "/testData.csv")
-//    void testSum_paramCsv(String operation, String expectedResult) {
-//        //GIVEN
-//        int second = 6;
-//        int first = 6;
-//
-//        //WHEN
-//        Double actualResult = performOperation.performOperation(first, second, operation);
-//        //THEN
-//        assertEquals(expectedResult, actualResult);
-//    }
+   @ParameterizedTest
+    @Disabled
+    @CsvSource(value = {"+:12.00", "/:1.00"}, delimiter = ':')
+    @CsvFileSource(resources = "/testData.csv")
+    void testSum_paramCsv(String operation, String expectedResult) {
+        //GIVEN
+        int second = 6;
+        int first = 6;
+
+        //WHEN
+        Double actualResult = calc.performOperation(first, second, operation);
+        //THEN
+        assertEquals(expectedResult, actualResult);
+    }
 
     @ParameterizedTest
     @MethodSource("provideValidData")
