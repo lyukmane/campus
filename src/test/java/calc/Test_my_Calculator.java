@@ -55,7 +55,6 @@ class Test_my_Calculator {
     }
 
     @ParameterizedTest
-
     @ValueSource(ints = {1,3,Integer.MAX_VALUE})
     void testSum_param(double first) {
         //GIVEN
@@ -76,16 +75,16 @@ class Test_my_Calculator {
     }
 
    @ParameterizedTest
-    @Disabled
-    @CsvSource(value = {"+:12.00", "/:1.00"}, delimiter = ':')
+@Disabled
+    @CsvSource(value = {"+:12.0", "/:1.0"}, delimiter = ':')
     @CsvFileSource(resources = "/testData.csv")
     void testSum_paramCsv(String operation, String expectedResult) {
         //GIVEN
-        int second = 6;
-        int first = 6;
+        double second = 6;
+        double first = 6;
 
         //WHEN
-        Double actualResult = calc.performOperation(first, second, operation);
+        String actualResult = String.valueOf(calc.performOperation(first, second, operation));
         //THEN
         assertEquals(expectedResult, actualResult);
     }
