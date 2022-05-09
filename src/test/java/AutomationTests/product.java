@@ -93,6 +93,39 @@ public class product {
 
     }
 
+    @Test
+    public void add_new_product() throws InterruptedException {
+        //GIVEN
+        driver.get("http://online-sh.herokuapp.com/login");
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(100L));
+        WebElement submit_login = wait.until(ExpectedConditions.
+                presenceOfElementLocated(By.cssSelector(".btn.btn-primary")));
+        submit_login.click();
+        WebElement button_add_product = wait.until(ExpectedConditions.
+                presenceOfElementLocated(By.cssSelector(".btn.btn-outline-success")));
+        button_add_product.click();
+        WebElement inputNameProduct = wait.until(ExpectedConditions.
+                presenceOfElementLocated(By.id("exampleInputProduct1")));
+        WebElement inputPriceProduct = wait.until(ExpectedConditions.
+                presenceOfElementLocated(By.id("exampleInputPrice1")));
+        WebElement submit = wait.until(ExpectedConditions.
+                presenceOfElementLocated(By.cssSelector(".btn.btn-outline-success")));
+
+        //WHEN
+
+
+        inputNameProduct.sendKeys("NewProduct");
+        inputPriceProduct.sendKeys("123");
+        submit.click();
+
+        String actualCurrentUrl = driver.getCurrentUrl();
+        //THEN
+        Thread.sleep(800l);
+//        Assertions.assertEquals(expectedUrl, actualCurrentUrl);
+
+    }
+
     @AfterEach
     public void cleanUp() {
         driver.close();
