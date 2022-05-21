@@ -11,12 +11,15 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.locators.RelativeLocator;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class FirstTest {
     private static WebDriver driver;
+    private static WebDriverWait wait;
 
     public FirstTest() {
         System.setProperty("webdriver.chrome.driver", "/Users/dima/Applications/chromedriver");
@@ -264,7 +267,8 @@ public class FirstTest {
         //WHEN
         driver.manage().window().maximize();
         driver.get("https://mdbootstrap.com/docs/standard/forms/checkbox/");
-        WebElement checkboxElementInput = driver.findElement(By.xpath("//label[contains(.,' Default checkbox')]//preceding-sibling::input"));
+        WebElement checkboxElementInput = driver.findElement(By.xpath
+                ("//label[contains(.,' Default checkbox')]//preceding-sibling::input"));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true)", checkboxElementInput);
 
         //THEN
@@ -278,9 +282,115 @@ public class FirstTest {
 
     }
 
+    @Test
+    public void clickRadioButton() throws InterruptedException {
+        //GIVEN
+        //WHEN
+        driver.get("https://www.javascripttutorial.net/javascript-dom/javascript-radio-button/");
+        driver.manage().window().maximize();
+        driver.switchTo().frame(1);
+
+        WebElement radio_button = driver.findElement(By.xpath("//*[@id='M']"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true)", radio_button);
+        radio_button.click();
+
+
+        //THEN
+        Assertions.assertTrue(radio_button.isSelected());
+
+
+    }
+
+    @Test
+    public void shouldSearch_byLink_Alerts() {
+        //GIVEN
+        String expectedUrl = "https://t.me/air_alert_ua";
+        //WHEN
+        driver.get("https://alerts.in.ua/");
+        String mainWindow = driver.getWindowHandle();
+        WebElement linkElement = driver.findElement(By.xpath("(//a[text()[contains(.,'Повітряна тривога')]])[1]"));
+
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click()", linkElement);
+
+        //THEN
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10L));
+        wait.until(ExpectedConditions.numberOfWindowsToBe(2));
+
+        for (String windowHandler : driver.getWindowHandles()) {
+            if(!mainWindow.contentEquals(windowHandler)) {
+                driver.switchTo().window(windowHandler);
+                break;
+            }
+        }
+
+        String actualCurrentUrl = driver.getCurrentUrl();
+        Assertions.assertEquals(expectedUrl,actualCurrentUrl);
+        //WHEN
+        driver.switchTo().window(mainWindow);
+
+    }
+
+    @Test
+    public void testSelect() {
+        //GIVEN
+        //WHEN
+        driver.get("https://getbootstrap.com/docs/5.0/forms/select/");
+        WebElement selectElement = driver.findElement(By.xpath("(//select[@class='form-select'])[1]"));
+        Select select = new Select(selectElement);
+        //select.selectByVisibleText("Two");
+        select.selectByValue("1");
+        try {
+            Thread.sleep(800l);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        //THEN
+        WebElement firstSelectedOption = select.getFirstSelectedOption();
+        Assertions.assertEquals("One", firstSelectedOption.getText());
+        Assertions.assertTrue(firstSelectedOption.isSelected());
+        Assertions.assertFalse(select.isMultiple());
+
+        //WHEN
+        List<WebElement> options = select.getOptions();
+
+        //THEN
+        Assertions.assertEquals(4, options.size());
+
+        //WHEN
+        //select.deselectAll();
+
+    }
+
+    @Test
+    public void testSearchResultPresent_seleniumInput() throws InterruptedException {
+        //GIVEN
+        driver.get("https://www.google.com/");
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(300L));
+        WebElement input = driver.findElement(By.xpath(".//input[@name='q']"));
+        WebElement gmailLink = driver.findElement(By.linkText("Gmail"));
+        Actions actions = new Actions(driver);
+        //WHEN
+        //actions.moveToElement(gmailLink).click().perform();
+        //Thread.sleep(100L);
+
+        //WHEN
+        //input.sendKeys("QA automation");
+        //input.sendKeys(Keys.ENTER);
+        //actions.sendKeys(input, "QA Automation").sendKeys(Keys.ENTER).perform();
+        //THEN
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(".//ulc")));
+
+
+
+    }
+
+
+
     @AfterEach
     public void cleanUp() {
         driver.close();
         driver.quit();
     }
 }
+

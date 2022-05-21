@@ -94,6 +94,28 @@ public class product {
     }
 
     @Test
+    public void login_non_existing_user() throws InterruptedException {
+        //GIVEN
+        String expectedUrl = "http://online-sh.herokuapp.com/products";
+        driver.get("http://online-sh.herokuapp.com/login");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(100L));
+
+        WebElement inputEmail = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("exampleInputEmail1")));
+        WebElement inputPassword = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("exampleInputPassword1")));
+        WebElement submit = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".btn.btn-primary")));
+        //WHEN
+        inputEmail.sendKeys("dmytroessay1@gmail.com");
+        inputPassword.sendKeys("123456");
+        submit.click();
+
+        String actualCurrentUrl = driver.getCurrentUrl();
+        //THEN
+        Thread.sleep(800l);
+        Assertions.assertEquals(expectedUrl, actualCurrentUrl);
+
+    }
+
+    @Test
     public void add_new_product() throws InterruptedException {
         //GIVEN
         driver.get("http://online-sh.herokuapp.com/login");
@@ -155,6 +177,32 @@ public class product {
 //        Assertions.assertEquals(expectedUrl, actualCurrentUrl);
 
     }
+
+    @Test
+    public void check_text_alert() {
+        //GIVEN
+        //WHEN
+        driver.get("http://online-sh.herokuapp.com/login");
+        driver.manage().window().maximize();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(100L));
+
+        WebElement inputEmail = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("exampleInputEmail1")));
+        //WHEN
+        inputEmail.sendKeys("dmytroessay1");
+        inputEmail.sendKeys(Keys.ENTER);
+        String message = driver.findElement(By.cssSelector
+                ("#exampleInputEmail1.form-control")).getAttribute("validationMessage");
+        System.out.println(message);
+        boolean messageContent = message.contains(
+                "Електронна адреса має містити знак \"@\". В електронній адресі \"dmytroessay1\" знака \"@\" немає.");
+
+        //THEN
+        Assertions.assertTrue(messageContent);
+
+
+    }
+
+
 
     @AfterEach
     public void cleanUp() {
