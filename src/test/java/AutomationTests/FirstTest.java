@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -385,6 +386,37 @@ public class FirstTest {
 
     }
 
+    @Test
+    public void test_cookie() throws InterruptedException {
+        //GIVEN
+
+        driver.get("https://demo.guru99.com/test/cookie/selenium_aut.php");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(300L));
+
+        WebElement inputEmail = wait.until(ExpectedConditions.presenceOfElementLocated(By.name("username")));
+        //WHEN
+        inputEmail.sendKeys("abc123");
+        //Given;
+        WebElement inputPass = wait.until(ExpectedConditions.presenceOfElementLocated(By.name("password")));
+        //WHEN
+        inputPass.sendKeys("123xyz");
+        //Given
+        WebElement submitButton = wait.until(ExpectedConditions.presenceOfElementLocated(By.name(
+                "submit")));
+        //WHEN
+        submitButton.click();
+        Set<Cookie> authCookie = driver.manage().getCookies();
+        System.out.println(authCookie);
+
+        ChromeDriver driver2 = new ChromeDriver();
+// Skip login
+        driver2.get("https://demo.guru99.com/test/cookie/selenium_aut.php");
+// Adding authorization cookie
+        driver2.manage().addCookie((Cookie) authCookie);
+// Then get authorized
+        driver2.get("https://demo.guru99.com/test/cookie/selenium_cookie.php");
+
+    }
 
 
     @AfterEach

@@ -11,11 +11,8 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
 import java.io.File;
 import java.io.IOException;
-import java.time.Duration;
 
 public class LoginTest{
     private static WebDriver driver;
@@ -28,13 +25,18 @@ public class LoginTest{
         options.setHeadless(false);
         driver = new ChromeDriver(options);
         loginPage = new LoginPage(driver);
-
     }
-
+    private void checkUserIsRedirectedToProducts() {
+        String currentUrl = driver.getCurrentUrl();
+        Assertions.assertEquals("http://online-sh.herokuapp.com/products", currentUrl);
+    }
+    private void checkUserIsRedirectedToRegistration() {
+        String currentUrl = driver.getCurrentUrl();
+        Assertions.assertEquals("http://online-sh.herokuapp.com/registration", currentUrl);
+    }
     @Test
     public void login_existing_user() {
         //GIVEN
-        String expectedUrl = "http://online-sh.herokuapp.com/products";
 
         //WHEN
         loginPage.openLoginPage();
@@ -43,40 +45,32 @@ public class LoginTest{
         loginPage.submit();
 
         //THEN
-        String currentUrl = driver.getCurrentUrl();
-        Assertions.assertEquals(expectedUrl, currentUrl);
+        checkUserIsRedirectedToProducts();
     }
 
     @Test
     public void login_non_existing_user() throws InterruptedException {
         //GIVEN
-        String expectedUrl = "http://online-sh.herokuapp.com/registration";
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(100L));
 
         //WHEN
         loginPage.openLoginPage();
         loginPage.setEmail("dmytroessay1@gmail.com");
         loginPage.setPassword("123");
         loginPage.submit();
-        String actualCurrentUrl = driver.getCurrentUrl();
 
         //THEN
-        Thread.sleep(800l);
-        Assertions.assertEquals(expectedUrl, actualCurrentUrl);
+        checkUserIsRedirectedToRegistration();
     }
 
     @Test
     public void check_text_alert() throws IOException {
         //GIVEN
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(100L));
-
         //WHEN
         loginPage.openLoginPage();
         loginPage.setEmail("dmytroessay1");
         loginPage.submit();
         String message = driver.findElement(By.cssSelector
                 ("#exampleInputEmail1.form-control")).getAttribute("validationMessage");
-        System.out.println(message);
         boolean messageContent = message.contains(
                 "Електронна адреса має містити знак \"@\". В електронній адресі \"dmytroessay1\" знака \"@\" немає.");
 
@@ -86,7 +80,6 @@ public class LoginTest{
         File screenshotAs = screenDriver.getScreenshotAs(OutputType.FILE);
         FileUtils.copyFile(screenshotAs, new File("/Users/dima/Documents/Testscreen.png"));
     }
-
 
     @AfterEach
     public void cleanUp() {
