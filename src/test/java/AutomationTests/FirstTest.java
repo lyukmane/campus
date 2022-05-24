@@ -1,10 +1,13 @@
 package AutomationTests;
 
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -405,18 +408,62 @@ public class FirstTest {
                 "submit")));
         //WHEN
         submitButton.click();
-        Set<Cookie> authCookie = driver.manage().getCookies();
-        System.out.println(authCookie);
+        File file = new File("Cookies.data");
+        try
+        {
+            // Delete old file if exists
+            file.delete();
+            file.createNewFile();
+            FileWriter fileWrite = new FileWriter(file);
+            BufferedWriter Bwrite = new BufferedWriter(fileWrite);
+            // loop for getting the cookie information
 
-        ChromeDriver driver2 = new ChromeDriver();
-// Skip login
-        driver2.get("https://demo.guru99.com/test/cookie/selenium_aut.php");
-// Adding authorization cookie
-        driver2.manage().addCookie((Cookie) authCookie);
-// Then get authorized
-        driver2.get("https://demo.guru99.com/test/cookie/selenium_cookie.php");
+            // loop for getting the cookie information
+            for(Cookie ck : driver.manage().getCookies())
+            {
+                Bwrite.write((ck.getName()+";"+ck.getValue()+";"+ck.getDomain()+";"+ck.getPath()+";"+ck.getExpiry()+";"+ck.isSecure()));
+                Bwrite.newLine();
+            }
+            Bwrite.close();
+            fileWrite.close();
 
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+        try{
+            FileReader fileReader = new FileReader(file);
+            BufferedReader Buffreader = new BufferedReader(fileReader);
+            String strline;
+            while((strline=Buffreader.readLine())!=null){
+                StringTokenizer token = new StringTokenizer(strline,";");
+                while(token.hasMoreTokens()){
+                    String name = token.nextToken();
+                    String value = token.nextToken();
+                    String domain = token.nextToken();
+                    String path = token.nextToken();
+                    Date expiry = null;
+
+                    String val;
+                    if(!(val=token.nextToken()).equals("null"))
+                    {
+                        expiry = new Date(val);
+                    }
+                    Boolean isSecure = new Boolean(token.nextToken()).
+                            booleanValue();
+                    Cookie ck = new Cookie(name,value,domain,path,expiry,isSecure);
+                    System.out.println(ck);
+                    driver.manage().addCookie(ck); // This will add the stored cookie to your current session
+                }
+            }
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+        driver.get("http://demo.guru99.com/test/cookie/selenium_aut.php");
     }
+
 
 
     @AfterEach
