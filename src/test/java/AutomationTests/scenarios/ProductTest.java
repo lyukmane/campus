@@ -2,11 +2,14 @@ package AutomationTests.scenarios;
 
 import AutomationTests.pages.LoginPage;
 import AutomationTests.pages.ProductPage;
+import io.qameta.allure.Description;
+import io.qameta.allure.Issue;
+import io.qameta.allure.Step;
+import io.qameta.allure.Story;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -17,13 +20,19 @@ public class ProductTest {
     private static ProductPage productPage;
     private static LoginPage loginPage;
     @BeforeAll
+    @Step("Set up driver before tests")
     static void init() {
         BaseSetUp baseSetUp = new BaseSetUp();
         loginPage = PageFactory.initElements(BaseSetUp.driver, LoginPage.class);
         productPage = PageFactory.initElements(BaseSetUp.driver, ProductPage.class);
     }
 
+    @RegisterExtension
+    ScreenshotOnFailure watcher = new ScreenshotOnFailure(BaseSetUp.driver, "target/surefire-reports");
     @Test
+    @Story("Product add, update and delete")
+    @Issue("issue-12345")
+    @Description("Delete product after update")
     public void delete_product(){
         //GIVEN
         WebDriverWait wait = new WebDriverWait(BaseSetUp.driver, Duration.ofMillis(300L));
@@ -39,6 +48,7 @@ public class ProductTest {
 
     }
     @Test
+    @Step("Add new product")
     public void add_new_product(){
         //GIVEN
         String nameProduct= "TestNameProduct";
@@ -60,6 +70,7 @@ public class ProductTest {
     }
 
     @Test
+    @Step("Update new product after add")
     public void update_new_product() throws InterruptedException {
         //WHEN
         loginPage.openLoginPage();
@@ -75,6 +86,7 @@ public class ProductTest {
     }
 
     @AfterAll
+    @Step("Quit browser")
     static void tearDown(){
         BaseSetUp.driver.quit();
     }
