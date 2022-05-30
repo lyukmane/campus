@@ -5,7 +5,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import java.time.Duration;
 
 public class LoginPage {
@@ -18,6 +17,8 @@ public class LoginPage {
     public LoginPage (WebDriver driver){
         this.driver = driver;
     }
+
+
     @Step("Set email as {emailText}")
     public LoginPage setEmail (String emailText){
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(100L));

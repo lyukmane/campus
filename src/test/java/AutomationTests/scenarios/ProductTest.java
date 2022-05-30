@@ -9,22 +9,20 @@ import io.qameta.allure.Story;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
 public class ProductTest {
-    private static WebDriver driver;
     private static ProductPage productPage;
     private static LoginPage loginPage;
     @BeforeAll
     @Step("Set up driver before tests")
     static void init() {
         BaseSetUp baseSetUp = new BaseSetUp();
-        loginPage = PageFactory.initElements(BaseSetUp.driver, LoginPage.class);
-        productPage = PageFactory.initElements(BaseSetUp.driver, ProductPage.class);
+        loginPage = PageFactory.initElements(baseSetUp.driver, LoginPage.class);
+        productPage = PageFactory.initElements(baseSetUp.driver, ProductPage.class);
     }
 
     @RegisterExtension
@@ -46,6 +44,18 @@ public class ProductTest {
         boolean item_deleted = wait.until(ExpectedConditions.invisibilityOfElementLocated(locator_item_deleted));
         Assertions.assertTrue(item_deleted);
 
+    }
+
+    @Test
+    @Step("Exit user from site")
+    public void exit_user(){
+        //WHEN
+        loginPage.openLoginPage();
+        loginPage.submit();
+        productPage.click_button_logout();
+        String actualCurrentUrl = BaseSetUp.driver.getCurrentUrl();
+        //THEN
+        Assertions.assertEquals("http://online-sh.herokuapp.com/login", actualCurrentUrl);
     }
     @Test
     @Step("Add new product")
@@ -82,7 +92,6 @@ public class ProductTest {
         String actualCurrentUrl = BaseSetUp.driver.getCurrentUrl();
         //THEN
         Assertions.assertEquals("http://online-sh.herokuapp.com/products", actualCurrentUrl);
-
     }
 
     @AfterAll

@@ -10,21 +10,19 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import io.qameta.allure.Step;
 import java.io.File;
 import java.io.IOException;
 
 public class LoginTest{
-    private static WebDriver driver;
     private static LoginPage loginPage;
 
     @BeforeAll
     @Step("Set up driver before tests")
     static void init() {
         BaseSetUp baseSetUp = new BaseSetUp();
-        loginPage = PageFactory.initElements(BaseSetUp.driver, LoginPage.class);
+        loginPage = PageFactory.initElements(baseSetUp.driver, LoginPage.class);
     }
 
     @RegisterExtension

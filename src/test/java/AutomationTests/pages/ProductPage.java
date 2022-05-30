@@ -2,6 +2,7 @@ package AutomationTests.pages;
 
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -17,6 +18,7 @@ public class ProductPage {
     By locator_delete_product_button = By.xpath(
             "//td/text()[contains(.,'TestNameUpdate')]/following::button[@class='btn btn-outline-danger']");
     By locator_submit_update = By.cssSelector(".btn.btn-outline-warning");
+    By locator_button_logout = By.cssSelector("a.btn.btn-dark");
     private static WebDriver driver;
 
     public ProductPage (WebDriver driver){
@@ -69,6 +71,17 @@ public class ProductPage {
         WebElement button_delete_product = wait.until(ExpectedConditions.
                 presenceOfElementLocated(locator_delete_product_button));
         button_delete_product.click();
+        return this;
+    }
+
+    @Step("Click logout button in the products page")
+    public ProductPage click_button_logout () {
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(500L));
+        driver.manage().window().maximize();
+        WebElement button_logout = driver.findElement(locator_button_logout);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true)", button_logout);
+        button_logout.click();
         return this;
     }
     @Step("Open products page")
