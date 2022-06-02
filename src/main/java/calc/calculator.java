@@ -4,7 +4,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 public class calculator {
-    private static final List<String> SUPPORTED_OPERATIONS = List.of("+", "/");
+   private static final List<String> SUPPORTED_OPERATIONS = List.of("+", "/");
 
     public String calculate(int first, int second, String operation){
 

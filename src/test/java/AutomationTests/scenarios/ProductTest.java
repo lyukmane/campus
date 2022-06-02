@@ -57,6 +57,16 @@ public class ProductTest {
         //THEN
         Assertions.assertEquals("http://online-sh.herokuapp.com/login", actualCurrentUrl);
     }
+
+    @Test
+    @Step("Exit user from site")
+    public void check_all_products_is_present(){
+        //WHEN
+        loginPage.openLoginPage();
+        loginPage.submit();
+        productPage.checkAllProductsVievisPresent();
+        productPage.checkProductsCountIsEquelToExpected(12);
+    }
     @Test
     @Step("Add new product")
     public void add_new_product(){

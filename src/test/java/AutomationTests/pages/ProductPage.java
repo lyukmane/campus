@@ -1,15 +1,20 @@
 package AutomationTests.pages;
 
 import io.qameta.allure.Step;
+import org.assertj.core.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
+import java.util.List;
 
 public class ProductPage {
+    @FindBy(tagName = "table")
+    private List<WebElement> allProductsView;
     By locator_add_product_button = By.cssSelector(".btn.btn-outline-success");
     By locator_name_product = By.id("exampleInputProduct1");
     By locator_price_product = By.id("exampleInputPrice1");
@@ -31,6 +36,21 @@ public class ProductPage {
         add_product_button.click();
         return this;
     }
+
+    @Step
+    public ProductPage checkAllProductsVievisPresent(){
+        Assertions.assertThat(allProductsView.size()).isEqualTo(1);
+        return this;
+    }
+
+    @Step
+    public ProductPage checkProductsCountIsEquelToExpected(int expectedProductCount){
+        List<WebElement> actualTableRows = allProductsView.get(0).findElements(By.tagName("tbody")).get(0).
+                findElements(By.tagName("tr"));
+        Assertions.assertThat(actualTableRows.size()).isEqualTo(expectedProductCount);
+        return this;
+    }
+
     @Step("Click update new product button")
     public ProductPage click_submit_update_product_button() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(300L));
